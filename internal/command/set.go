@@ -2,6 +2,7 @@ package command
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/vesal-j/gocache/internal/store"
 )
@@ -23,9 +24,10 @@ func (c *CommandImpl) Set(args []string) string {
 	}
 
 	c.Store.Caches[args[0]] = store.CacheObject{
-		Key:   args[0],
-		Value: args[1],
-		TTL:   TtlNumber,
+		Key:       args[0],
+		Value:     args[1],
+		TTL:       TtlNumber,
+		CreatedAt: time.Now().Unix(),
 	}
 	return "OK"
 }
