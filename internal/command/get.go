@@ -5,7 +5,6 @@ func (c *CommandImpl) Get(args []string) string {
 		return "ERR wrong number of arguments for 'get' command"
 	}
 
-	// Check if key exists in cache
 	value, exists := c.Store.Caches[args[0]]
 	if !exists {
 		return "(nil)"

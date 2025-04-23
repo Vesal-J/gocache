@@ -1,7 +1,6 @@
 package command
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/vesal-j/gocache/internal/store"
@@ -28,6 +27,5 @@ func (c *CommandImpl) Set(args []string) string {
 		Value: args[1],
 		TTL:   TtlNumber,
 	}
-	fmt.Println(c.Store.Caches[args[0]])
 	return "OK"
 }
