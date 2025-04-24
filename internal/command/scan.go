@@ -33,7 +33,7 @@ func (c *CommandImpl) Scan(args []string) []byte {
 			if i+1 >= len(args) {
 				return utils.ToRESP("ERR syntax error")
 			}
-			_, err := strconv.Atoi(args[i+1])
+			_, err = strconv.Atoi(args[i+1])
 			if err != nil {
 				return utils.ToRESP("ERR value is not an integer or out of range")
 			}

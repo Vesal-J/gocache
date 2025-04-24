@@ -66,6 +66,7 @@ func EncodeRESP(value any) ([]byte, error) {
 	switch v := value.(type) {
 
 	case string:
+		// Treat as Bulk String
 		return []byte(fmt.Sprintf("$%d\r\n%s\r\n", len(v), v)), nil
 
 	case []string:
@@ -83,31 +84,17 @@ func EncodeRESP(value any) ([]byte, error) {
 		return []byte(fmt.Sprintf("-%s\r\n", v.Error())), nil
 
 	case nil:
-		return []byte("$-1\r\n"), nil
+		return []byte("$-1\r\n"), nil // RESP Null Bulk String
 
 	case []any:
 		var buf bytes.Buffer
 		buf.WriteString(fmt.Sprintf("*%d\r\n", len(v)))
 		for _, item := range v {
-			// 🔧 Convert []string to []any recursively
-			switch inner := item.(type) {
-			case []string:
-				sub := make([]any, len(inner))
-				for i, s := range inner {
-					sub[i] = s
-				}
-				encoded, err := EncodeRESP(sub)
-				if err != nil {
-					return nil, err
-				}
-				buf.Write(encoded)
-			default:
-				encoded, err := EncodeRESP(item)
-				if err != nil {
-					return nil, err
-				}
-				buf.Write(encoded)
+			encoded, err := EncodeRESP(item)
+			if err != nil {
+				return nil, err
 			}
+			buf.Write(encoded)
 		}
 		return buf.Bytes(), nil
 
