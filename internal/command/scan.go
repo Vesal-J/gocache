@@ -1,7 +1,7 @@
 package command
 
 import (
-	"fmt"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -19,6 +19,7 @@ func (c *CommandImpl) Scan(args []string) []byte {
 	}
 
 	var pattern string = "*"
+	var count int = 10 // default count
 
 	// Parse optional arguments
 	for i := 1; i < len(args); i++ {
@@ -33,7 +34,7 @@ func (c *CommandImpl) Scan(args []string) []byte {
 			if i+1 >= len(args) {
 				return utils.ToRESP("ERR syntax error")
 			}
-			_, err = strconv.Atoi(args[i+1])
+			count, err = strconv.Atoi(args[i+1])
 			if err != nil {
 				return utils.ToRESP("ERR value is not an integer or out of range")
 			}
@@ -44,17 +45,23 @@ func (c *CommandImpl) Scan(args []string) []byte {
 	// Get all keys that match the pattern
 	matches := make([]string, 0)
 	for key := range c.Store.Caches {
-		if strings.Contains(key, pattern) {
+		matched, err := filepath.Match(pattern, key)
+		if err != nil {
+			continue // Skip invalid patterns
+		}
+		if matched {
 			matches = append(matches, key)
+			if len(matches) >= count {
+				break
+			}
 		}
 	}
 
-	// Return all matches since we don't implement actual cursor-based iteration
-	result, err := utils.EncodeRESP([]any{"0", matches}) // matches is []string
+	// Return matches with cursor
+	result, err := utils.EncodeRESP([]any{"0", matches})
 	if err != nil {
 		return utils.ToRESP(err.Error())
 	}
 
-	fmt.Println(c.Store.Caches)
 	return result
 }
