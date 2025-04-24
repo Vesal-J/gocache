@@ -1,14 +1,16 @@
 package command
 
-func (c *CommandImpl) Get(args []string) string {
+import "github.com/vesal-j/gocache/internal/utils"
+
+func (c *CommandImpl) Get(args []string) []byte {
 	if len(args) != 1 {
-		return "ERR wrong number of arguments for 'get' command"
+		return utils.ToRESP("ERR wrong number of arguments for 'get' command")
 	}
 
 	value, exists := c.Store.Caches[args[0]]
 	if !exists {
-		return "(nil)"
+		return utils.ToRESP("(nil)")
 	}
 
-	return value.Value
+	return utils.ToRESP(value.Value)
 }

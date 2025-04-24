@@ -1,14 +1,15 @@
 package core
 
 import (
+	"bufio"
 	"fmt"
 	"net"
+	"strconv"
 	"strings"
 )
 
 type App interface {
 	Listen()
-	handleConnection(net.Conn)
 }
 
 type AppImpl struct {
@@ -23,55 +24,70 @@ func NewApp(port int, router *Router) App {
 	}
 }
 
-func (l *AppImpl) Listen() {
-	fmt.Printf("Starting server on port %d\n", l.Port)
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", l.Port))
+func (a *AppImpl) Listen() {
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", a.Port))
 	if err != nil {
-		fmt.Printf("Failed to start server: %v\n", err)
-		return
+		panic(err)
 	}
 
-	defer listener.Close()
+	fmt.Println("Redis mock listening on port", a.Port)
 
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			fmt.Printf("Failed to accept connection: %v\n", err)
+			fmt.Println("Connection error:", err)
 			continue
 		}
 
-		fmt.Printf("New connection from %s\n", conn.RemoteAddr().String())
-
-		// Handle connection in a goroutine
-		go l.handleConnection(conn)
+		// Handle each connection in a goroutine
+		go handleConnection(conn, a.Router)
 	}
 }
 
-func (a *AppImpl) handleConnection(conn net.Conn) {
+func handleConnection(conn net.Conn, router *Router) {
 	defer conn.Close()
+	reader := bufio.NewReader(conn)
 
-	buffer := make([]byte, 1024)
 	for {
-		n, err := conn.Read(buffer)
+		line, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Printf("Connection closed: %v\n", err)
 			return
 		}
 
-		input := strings.TrimSpace(string(buffer[:n]))
-		input = strings.Trim(input, "{}")
-
-		parts := strings.Fields(input)
-		if len(parts) == 0 {
+		if !strings.HasPrefix(line, "*") {
 			continue
 		}
 
-		command := strings.ToLower(parts[0])
-		args := parts[1:]
+		argCount, err := strconv.Atoi(strings.TrimPrefix(strings.TrimSpace(line), "*"))
+		if err != nil || argCount == 0 {
+			continue
+		}
 
-		result := a.Router.Handle(command, args)
+		args := make([]string, 0, argCount)
 
-		response := fmt.Sprintf("%s\n", result)
-		conn.Write([]byte(response))
+		for i := 0; i < argCount; i++ {
+			_, err := reader.ReadString('\n') // skip $N
+			if err != nil {
+				return
+			}
+			argLine, err := reader.ReadString('\n')
+			if err != nil {
+				return
+			}
+			args = append(args, strings.TrimSpace(argLine))
+		}
+
+		if len(args) == 0 {
+			conn.Write([]byte("-ERR empty command\r\n"))
+			continue
+		}
+
+		command := strings.ToUpper(args[0])
+		fmt.Println(command, args)
+		result := router.Handle(command, args[1:])
+		conn.Write(result)
+		if command != "INFO" {
+			fmt.Println("result", string(result))
+		}
 	}
 }
