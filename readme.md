@@ -4,7 +4,7 @@
           
 # GoCache - Redis Clone in Go
 
-A lightweight in-memory cache server implementation inspired by Redis, written in Go.
+A in-memory cache server implementation inspired by Redis, written in Go and compatible with Redis clients, clis and...
 
 ## Features
 
@@ -13,6 +13,7 @@ A lightweight in-memory cache server implementation inspired by Redis, written i
 - Support for TTL (Time To Live) on keys
 - Concurrent connections handling
 - Thread-safe operations
+- Supports RESP
 
 ## Supported Commands
 
