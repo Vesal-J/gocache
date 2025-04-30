@@ -22,8 +22,8 @@ type CommandImpl struct {
 	Store *store.Store
 }
 
-func NewCommand(store *store.Store) CommandImpl {
-	return CommandImpl{
+func NewCommand(store *store.Store) Command {
+	return &CommandImpl{
 		Store: store,
 	}
 }
