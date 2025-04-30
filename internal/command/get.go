@@ -9,7 +9,11 @@ func (c *CommandImpl) Get(args []string) []byte {
 
 	value, exists := c.Store.Caches[args[0]]
 	if !exists {
-		return utils.ToRESP("(nil)")
+		result, err := utils.EncodeRESP(nil)
+		if err != nil {
+			return utils.ToRESP(err.Error())
+		}
+		return result
 	}
 
 	return utils.ToRESP(value.Value)

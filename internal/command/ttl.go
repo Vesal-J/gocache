@@ -14,12 +14,20 @@ func (c *CommandImpl) TTL(args []string) []byte {
 	key := args[0]
 	value, exists := c.Store.Caches[key]
 	if !exists {
-		return utils.ToRESP("-2") // Key does not exist
+		result, err := utils.EncodeRESP(-2)
+		if err != nil {
+			return utils.ToRESP(err.Error())
+		}
+		return result
 	}
 
 	// If TTL is 0, key is persistent
 	if value.TTL == 0 {
-		return utils.ToRESP("-1") // Key exists but has no TTL
+		result, err := utils.EncodeRESP(-1)
+		if err != nil {
+			return utils.ToRESP(err.Error())
+		}
+		return result
 	}
 
 	// Calculate remaining TTL
@@ -28,7 +36,11 @@ func (c *CommandImpl) TTL(args []string) []byte {
 
 	// If remaining time is negative, key has expired
 	if remaining < 0 {
-		return utils.ToRESP("-2") // Key has expired
+		result, err := utils.EncodeRESP(-2)
+		if err != nil {
+			return utils.ToRESP(err.Error())
+		}
+		return result
 	}
 
 	result, err := utils.EncodeRESP(remaining)
