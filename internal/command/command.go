@@ -19,6 +19,7 @@ type Command interface {
 	Strlen(args []string) []byte
 	Getrange(args []string) []byte
 	Command(args []string) []byte
+	Del(args []string) []byte
 }
 
 type CommandImpl struct {

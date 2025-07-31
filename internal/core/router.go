@@ -37,6 +37,7 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 		"strlen":   command.Strlen,
 		"getrange": command.Getrange,
 		"command":  command.Command,
+		"del":      command.Del,
 	}
 
 	return router
