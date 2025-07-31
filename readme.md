@@ -13,14 +13,7 @@ A in-memory cache server implementation inspired by Redis, written in Go and com
 - Support for TTL (Time To Live) on keys
 - Concurrent connections handling
 - Thread-safe operations
-- Supports RESP
-
-## Supported Commands
-
-Currently supports the following Redis-like commands:
-
-- `SET key value [ttl]` - Set a key with a value and optional TTL in seconds
-- `GET key` - Get the value of a key
+- Supports RESP (Redis Serialization Protocol)
 
 ## Installation
 
@@ -38,39 +31,91 @@ go build
 ./gocache
 ```
 
-The server will start listening on port 6969 by default.
+The server will start listening on port 6380 by default.
 
 ### Connecting to the Server
 
-You can use netcat (nc) to connect to the server:
+Since GoCache uses RESP (Redis Serialization Protocol), you should use `redis-cli` to connect to the server:
 
 ```bash
-nc localhost 6969
+redis-cli -p 6380
+```
+
+Or connect to a specific host:
+
+```bash
+redis-cli -h localhost -p 6380
 ```
 
 ### Example Commands
 
-```
+Once connected with redis-cli, you can use standard Redis commands:
+
+```bash
+# Set a key-value pair
 SET mykey myvalue
 OK
 
-SET mykey myvalue 10  # Set with 10 seconds TTL
+# Set a key with TTL (expires in 10 seconds)
+SET mykey myvalue EX 10
 OK
 
+# Get a value
 GET mykey
 myvalue
 
-# After 10 seconds
+# Check if key exists
+EXISTS mykey
+(integer) 1
+
+# Get TTL for a key
+TTL mykey
+(integer) 8
+
+# After 10 seconds, the key expires
 GET mykey
 (nil)
+
+# Test connection
+PING
+PONG
+
+# Get server info
+INFO
+# ... server information ...
+
+# Get database size
+DBSIZE
+(integer) 0
+```
+
+### Using with Other Redis Clients
+
+Since GoCache implements the RESP protocol, it's compatible with most Redis clients:
+
+- **Python**: `redis-py`
+- **Node.js**: `redis` or `ioredis`
+- **Java**: `Jedis`
+- **C#**: `StackExchange.Redis`
+
+Example with Python:
+
+```python
+import redis
+
+r = redis.Redis(host='localhost', port=6380)
+r.set('mykey', 'myvalue', ex=10)
+value = r.get('mykey')
+print(value)  # b'myvalue'
 ```
 
 ## Architecture
 
 - `internal/core/app.go` - Main application logic and TCP server implementation
 - `internal/store` - In-memory storage implementation with TTL support
-- `internal/command` - Command handlers (GET, SET)
+- `internal/command` - Command handlers (GET, SET, etc.)
 - `internal/core/router.go` - Command routing and processing
+- `internal/utils` - RESP protocol utilities
 
 ## Features
 
@@ -79,10 +124,12 @@ GET mykey
 3. **Thread-safe Operations**: Uses mutex for safe concurrent access
 4. **Command Router**: Extensible command routing system
 5. **Clean Architecture**: Modular design for easy extension
+6. **RESP Protocol**: Full Redis Serialization Protocol support for client compatibility
 
 ## Requirements
 
 - Go 1.23.1 or higher
+- redis-cli (for testing) or any Redis client library
 
 ## License
 
