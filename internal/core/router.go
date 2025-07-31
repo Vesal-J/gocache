@@ -9,47 +9,47 @@ import (
 )
 
 type Router struct {
-	Store   store.Store
-	Command command.Command
+	Store      store.Store
+	Command    command.Command
+	CommandMap map[string]func([]string) []byte
 }
 
 func NewRouter(store *store.Store, command command.Command) *Router {
-	return &Router{
+	router := &Router{
 		Store:   *store,
 		Command: command,
 	}
+
+	router.CommandMap = map[string]func([]string) []byte{
+		"ping":   command.Ping,
+		"get":    command.Get,
+		"set":    command.Set,
+		"client": command.Client,
+		"info":   command.Info,
+		"auth":   command.Auth,
+		"exists": command.Exists,
+		"ttl":    command.TTL,
+		"type":   command.Type,
+		"dbsize": command.DBSIZE,
+		"memory": command.Memory,
+		"scan":   command.Scan,
+		"config": command.Config,
+	}
+
+	return router
 }
 
 func (r *Router) Handle(command string, args []string) []byte {
 	command = strings.TrimSpace(strings.ToLower(command))
-	switch command {
-	case "ping":
-		return r.Command.Ping(args)
-	case "get":
-		return r.Command.Get(args)
-	case "set":
-		return r.Command.Set(args)
-	case "client":
-		return r.Command.Client(args)
-	case "info":
-		return r.Command.Info(args)
-	case "auth":
-		return r.Command.Auth(args)
-	case "exists":
-		return r.Command.Exists(args)
-	case "ttl":
-		return r.Command.TTL(args)
-	case "type":
-		return r.Command.Type(args)
-	case "dbsize":
-		return r.Command.DBSIZE(args)
-	case "memory":
-		return r.Command.Memory(args)
-	case "scan":
-		return r.Command.Scan(args)
-	case "config":
-		return r.Command.Config(args)
-	default:
+
+	if command == "" {
+		return utils.ToRESP("ERR empty command")
+	}
+
+	commandFunc, exists := r.CommandMap[command]
+	if !exists {
 		return utils.ToRESP("ERR unknown command")
 	}
+
+	return commandFunc(args)
 }
