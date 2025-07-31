@@ -16,6 +16,9 @@ type Command interface {
 	Set(args []string) []byte
 	TTL(args []string) []byte
 	Type(args []string) []byte
+	Strlen(args []string) []byte
+	Getrange(args []string) []byte
+	Command(args []string) []byte
 }
 
 type CommandImpl struct {

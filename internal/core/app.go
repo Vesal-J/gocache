@@ -54,11 +54,12 @@ func handleConnection(conn net.Conn, router *Router) {
 			return
 		}
 
+		line = strings.TrimSpace(line)
 		if !strings.HasPrefix(line, "*") {
 			continue
 		}
 
-		argCount, err := strconv.Atoi(strings.TrimPrefix(strings.TrimSpace(line), "*"))
+		argCount, err := strconv.Atoi(strings.TrimPrefix(line, "*"))
 		if err != nil || argCount == 0 {
 			continue
 		}
@@ -66,15 +67,32 @@ func handleConnection(conn net.Conn, router *Router) {
 		args := make([]string, 0, argCount)
 
 		for i := 0; i < argCount; i++ {
-			_, err := reader.ReadString('\n') // skip $N
+			dollarLine, err := reader.ReadString('\n')
 			if err != nil {
 				return
 			}
-			argLine, err := reader.ReadString('\n')
+			dollarLine = strings.TrimSpace(dollarLine)
+			if !strings.HasPrefix(dollarLine, "$") {
+				continue
+			}
+
+			argLen, err := strconv.Atoi(strings.TrimPrefix(dollarLine, "$"))
+			if err != nil || argLen < 0 {
+				continue
+			}
+
+			argBytes := make([]byte, argLen)
+			_, err = reader.Read(argBytes)
 			if err != nil {
 				return
 			}
-			args = append(args, strings.TrimSpace(argLine))
+
+			_, err = reader.ReadString('\n')
+			if err != nil {
+				return
+			}
+
+			args = append(args, string(argBytes))
 		}
 
 		if len(args) == 0 {

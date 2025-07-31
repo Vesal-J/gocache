@@ -11,7 +11,7 @@ import (
 
 func (c *CommandImpl) Set(args []string) []byte {
 	if len(args) < 2 {
-		return utils.ToRESP("ERR wrong number of arguments for 'set' command")
+		return utils.ToRESPError("wrong number of arguments for 'set' command")
 	}
 
 	key := args[0]
@@ -33,36 +33,44 @@ func (c *CommandImpl) Set(args []string) []byte {
 			i++
 		case "EX":
 			if i+1 >= len(args) {
-				return utils.ToRESP("ERR syntax error")
+				return utils.ToRESPError("syntax error")
 			}
 			seconds, err := strconv.Atoi(args[i+1])
 			if err != nil || seconds < 0 {
-				return utils.ToRESP("ERR invalid TTL")
+				return utils.ToRESPError("invalid TTL")
 			}
 			ttl = seconds
 			i += 2
 		case "PX":
 			if i+1 >= len(args) {
-				return utils.ToRESP("ERR syntax error")
+				return utils.ToRESPError("syntax error")
 			}
 			millis, err := strconv.Atoi(args[i+1])
 			if err != nil || millis < 0 {
-				return utils.ToRESP("ERR invalid TTL")
+				return utils.ToRESPError("invalid TTL")
 			}
 			ttl = millis / 1000
 			i += 2
 		default:
-			return utils.ToRESP("ERR syntax error")
+			return utils.ToRESPError("syntax error")
 		}
 	}
 
 	_, exists := c.Store.Caches[key]
 
 	if nx && exists {
-		return []byte("$-1\r\n") // do not set if exists
+		result, err := utils.EncodeRESP(nil)
+		if err != nil {
+			return utils.ToRESPError(err.Error())
+		}
+		return result // do not set if exists
 	}
 	if xx && !exists {
-		return []byte("$-1\r\n") // do not set if not exists
+		result, err := utils.EncodeRESP(nil)
+		if err != nil {
+			return utils.ToRESPError(err.Error())
+		}
+		return result // do not set if not exists
 	}
 
 	c.Store.Caches[key] = store.CacheObject{

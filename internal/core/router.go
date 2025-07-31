@@ -21,19 +21,22 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 	}
 
 	router.CommandMap = map[string]func([]string) []byte{
-		"ping":   command.Ping,
-		"get":    command.Get,
-		"set":    command.Set,
-		"client": command.Client,
-		"info":   command.Info,
-		"auth":   command.Auth,
-		"exists": command.Exists,
-		"ttl":    command.TTL,
-		"type":   command.Type,
-		"dbsize": command.DBSIZE,
-		"memory": command.Memory,
-		"scan":   command.Scan,
-		"config": command.Config,
+		"ping":     command.Ping,
+		"get":      command.Get,
+		"set":      command.Set,
+		"client":   command.Client,
+		"info":     command.Info,
+		"auth":     command.Auth,
+		"exists":   command.Exists,
+		"ttl":      command.TTL,
+		"type":     command.Type,
+		"dbsize":   command.DBSIZE,
+		"memory":   command.Memory,
+		"scan":     command.Scan,
+		"config":   command.Config,
+		"strlen":   command.Strlen,
+		"getrange": command.Getrange,
+		"command":  command.Command,
 	}
 
 	return router
@@ -43,12 +46,12 @@ func (r *Router) Handle(command string, args []string) []byte {
 	command = strings.TrimSpace(strings.ToLower(command))
 
 	if command == "" {
-		return utils.ToRESP("ERR empty command")
+		return utils.ToRESPError("empty command")
 	}
 
 	commandFunc, exists := r.CommandMap[command]
 	if !exists {
-		return utils.ToRESP("ERR unknown command")
+		return utils.ToRESPError("unknown command")
 	}
 
 	return commandFunc(args)
