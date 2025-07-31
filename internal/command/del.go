@@ -9,18 +9,17 @@ func (c *CommandImpl) Del(args []string) []byte {
 		return utils.ToRESPError("wrong number of arguments for 'del' command")
 	}
 
-	_, exists := c.Store.Caches[args[0]]
-	if !exists {
-		result, err := utils.EncodeRESP(0)
-		if err != nil {
-			return utils.ToRESPError(err.Error())
+	deletedCount := 0
+
+	for _, arg := range args {
+		_, exists := c.Store.Caches[arg]
+		if exists {
+			delete(c.Store.Caches, arg)
+			deletedCount++
 		}
-		return result
 	}
 
-	delete(c.Store.Caches, args[0])
-
-	result, err := utils.EncodeRESP(1)
+	result, err := utils.EncodeRESP(deletedCount)
 	if err != nil {
 		return utils.ToRESPError(err.Error())
 	}
