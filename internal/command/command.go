@@ -20,6 +20,10 @@ type Command interface {
 	Getrange(args []string) []byte
 	Command(args []string) []byte
 	Del(args []string) []byte
+	Incr(args []string) []byte
+	IncrBy(args []string) []byte
+	Decr(args []string) []byte
+	DecrBy(args []string) []byte
 }
 
 type CommandImpl struct {

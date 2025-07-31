@@ -38,6 +38,10 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 		"getrange": command.Getrange,
 		"command":  command.Command,
 		"del":      command.Del,
+		"incr":     command.Incr,
+		"decr":     command.Decr,
+		"incrby":   command.IncrBy,
+		"decrby":   command.DecrBy,
 	}
 
 	return router
