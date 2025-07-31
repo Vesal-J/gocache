@@ -10,6 +10,12 @@ import (
 )
 
 func ToRESP(args ...string) []byte {
+	if len(args) == 1 {
+		// Single argument - return as simple string
+		return []byte(fmt.Sprintf("+%s\r\n", args[0]))
+	}
+
+	// Multiple arguments - return as array
 	var b []byte
 	b = append(b, '*')
 	b = append(b, []byte(fmt.Sprintf("%d\r\n", len(args)))...)
@@ -18,6 +24,11 @@ func ToRESP(args ...string) []byte {
 		b = append(b, []byte(fmt.Sprintf("%d\r\n%s\r\n", len(arg), arg))...)
 	}
 	return b
+}
+
+// ToRESPError returns a RESP error response
+func ToRESPError(message string) []byte {
+	return []byte(fmt.Sprintf("-%s\r\n", message))
 }
 
 func ParseRESP(input string) ([]string, error) {
