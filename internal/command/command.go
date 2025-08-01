@@ -25,6 +25,9 @@ type Command interface {
 	Decr(args []string) []byte
 	DecrBy(args []string) []byte
 	Append(args []string) []byte
+	SetEX(args []string) []byte
+	SetNX(args []string) []byte
+	PSetEX(args []string) []byte
 }
 
 type CommandImpl struct {

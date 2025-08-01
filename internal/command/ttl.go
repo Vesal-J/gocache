@@ -32,7 +32,7 @@ func (c *CommandImpl) TTL(args []string) []byte {
 
 	// Calculate remaining TTL
 	elapsed := time.Now().Unix() - value.CreatedAt
-	remaining := value.TTL - int(elapsed)
+	remaining := value.TTL - time.Duration(elapsed)
 
 	// If remaining time is negative, key has expired
 	if remaining < 0 {

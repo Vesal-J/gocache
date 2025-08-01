@@ -1,9 +1,11 @@
 package store
 
+import "time"
+
 type CacheObject struct {
 	Key       string
 	Value     string
-	TTL       int
+	TTL       time.Duration
 	CreatedAt int64
 }
 

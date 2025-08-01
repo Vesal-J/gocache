@@ -76,7 +76,7 @@ func (c *CommandImpl) Set(args []string) []byte {
 	c.Store.Caches[key] = store.CacheObject{
 		Key:       key,
 		Value:     value,
-		TTL:       ttl,
+		TTL:       time.Duration(ttl) * time.Second,
 		CreatedAt: time.Now().Unix(),
 	}
 

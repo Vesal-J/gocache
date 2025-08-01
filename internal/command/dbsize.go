@@ -16,7 +16,7 @@ func (c *CommandImpl) DBSIZE(args []string) []byte {
 		// Skip expired keys
 		if value.TTL > 0 {
 			elapsed := time.Now().Unix() - value.CreatedAt
-			if value.TTL-int(elapsed) < 0 {
+			if value.TTL-time.Duration(elapsed) < 0 {
 				continue
 			}
 		}

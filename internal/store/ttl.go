@@ -46,7 +46,7 @@ func (tm *TTLManager) cleanup() {
 
 	now := time.Now().Unix()
 	for key, obj := range tm.store.Caches {
-		if obj.TTL > 0 && obj.CreatedAt+int64(obj.TTL) < now {
+		if obj.TTL > 0 && obj.CreatedAt+int64(obj.TTL.Seconds()) < now {
 			delete(tm.store.Caches, key)
 		}
 	}
