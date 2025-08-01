@@ -11,15 +11,15 @@ func (c *CommandImpl) DecrBy(args []string) []byte {
 		return utils.ToRESPError("wrong number of arguments for 'decrby' command")
 	}
 
-	increment, err := strconv.Atoi(args[1])
+	decrement, err := strconv.Atoi(args[1])
 	if err != nil {
-		return utils.ToRESPError("invalid increment")
+		return utils.ToRESPError("invalid decrement")
 	}
 
 	value, exists := c.Store.Caches[args[0]]
 	if !exists {
-		c.Set([]string{args[0], strconv.Itoa(-increment)})
-		return utils.ToRESP(strconv.Itoa(-increment))
+		c.Set([]string{args[0], strconv.Itoa(-decrement)})
+		return utils.ToRESP(strconv.Itoa(-decrement))
 	}
 
 	num, err := strconv.Atoi(value.Value)
@@ -27,7 +27,7 @@ func (c *CommandImpl) DecrBy(args []string) []byte {
 		return utils.ToRESPError(err.Error())
 	}
 
-	num -= increment
+	num -= decrement
 	c.Set([]string{args[0], strconv.Itoa(num)})
 
 	return utils.ToRESP(strconv.Itoa(num))
