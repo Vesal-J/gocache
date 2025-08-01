@@ -50,6 +50,8 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 		"mget":     command.MGet,
 		"msetnx":   command.MSetNX,
 		"getset":   command.GetSet,
+		"expire":   command.Expire,
+		"expireat": command.ExpireAt,
 	}
 
 	return router
