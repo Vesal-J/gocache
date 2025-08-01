@@ -28,6 +28,9 @@ type Command interface {
 	SetEX(args []string) []byte
 	SetNX(args []string) []byte
 	PSetEX(args []string) []byte
+	MSet(args []string) []byte
+	MGet(args []string) []byte
+	MSetNX(args []string) []byte
 }
 
 type CommandImpl struct {

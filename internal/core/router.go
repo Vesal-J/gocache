@@ -46,6 +46,9 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 		"setex":    command.SetEX,
 		"setnx":    command.SetNX,
 		"psetex":   command.PSetEX,
+		"mset":     command.MSet,
+		"mget":     command.MGet,
+		"msetnx":   command.MSetNX,
 	}
 
 	return router
