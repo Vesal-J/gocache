@@ -31,6 +31,7 @@ type Command interface {
 	MSet(args []string) []byte
 	MGet(args []string) []byte
 	MSetNX(args []string) []byte
+	GetSet(args []string) []byte
 }
 
 type CommandImpl struct {
