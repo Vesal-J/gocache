@@ -24,6 +24,7 @@ type Command interface {
 	IncrBy(args []string) []byte
 	Decr(args []string) []byte
 	DecrBy(args []string) []byte
+	Append(args []string) []byte
 }
 
 type CommandImpl struct {
