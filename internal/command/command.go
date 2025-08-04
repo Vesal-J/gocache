@@ -34,6 +34,9 @@ type Command interface {
 	GetSet(args []string) []byte
 	Expire(args []string) []byte
 	ExpireAt(args []string) []byte
+	Persist(args []string) []byte
+	PExpire(args []string) []byte
+	PExpireAt(args []string) []byte
 }
 
 type CommandImpl struct {
