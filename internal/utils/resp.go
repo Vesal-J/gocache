@@ -113,3 +113,14 @@ func EncodeRESP(value any) ([]byte, error) {
 		return nil, fmt.Errorf("unsupported type: %T", value)
 	}
 }
+
+func ToRESPArray(args []string) []byte {
+	var b []byte
+	b = append(b, '*')
+	b = append(b, []byte(fmt.Sprintf("%d\r\n", len(args)))...)
+	for _, arg := range args {
+		b = append(b, '$')
+		b = append(b, []byte(fmt.Sprintf("%d\r\n%s\r\n", len(arg), arg))...)
+	}
+	return b
+}

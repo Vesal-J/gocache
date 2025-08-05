@@ -64,6 +64,7 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 		"persist":   command.Persist,
 		"pexpire":   command.PExpire,
 		"pexpireat": command.PExpireAt,
+		"keys":      command.Keys,
 	}
 
 	return router

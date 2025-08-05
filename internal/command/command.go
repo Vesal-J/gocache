@@ -37,6 +37,7 @@ type Command interface {
 	Persist(args []string) []byte
 	PExpire(args []string) []byte
 	PExpireAt(args []string) []byte
+	Keys(args []string) []byte
 }
 
 type CommandImpl struct {
