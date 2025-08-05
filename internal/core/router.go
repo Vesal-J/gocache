@@ -1,6 +1,7 @@
 package core
 
 import (
+	"net"
 	"strings"
 
 	"github.com/vesal-j/gocache/internal/command"
@@ -12,12 +13,20 @@ type Router struct {
 	Store      store.Store
 	Command    command.Command
 	CommandMap map[string]func([]string) []byte
+	EventLoop  chan Event
+}
+
+type Event struct {
+	Command string
+	Args    []string
+	Conn    *net.Conn
 }
 
 func NewRouter(store *store.Store, command command.Command) *Router {
 	router := &Router{
-		Store:   *store,
-		Command: command,
+		Store:     *store,
+		Command:   command,
+		EventLoop: make(chan Event, 1000),
 	}
 
 	router.CommandMap = map[string]func([]string) []byte{

@@ -18,9 +18,22 @@ type AppImpl struct {
 }
 
 func NewApp(port int, router *Router) App {
-	return &AppImpl{
+	app := &AppImpl{
 		Port:   port,
 		Router: router,
+	}
+
+	go app.startEventProcessor()
+	return app
+}
+
+func (a *AppImpl) startEventProcessor() {
+	for event := range a.Router.EventLoop {
+		result := a.Router.Handle(event.Command, event.Args)
+		(*event.Conn).Write(result)
+		if event.Command != "INFO" {
+			fmt.Println("result", string(result))
+		}
 	}
 }
 
@@ -39,7 +52,6 @@ func (a *AppImpl) Listen() {
 			continue
 		}
 
-		// Handle each connection in a goroutine
 		go handleConnection(conn, a.Router)
 	}
 }
@@ -102,10 +114,11 @@ func handleConnection(conn net.Conn, router *Router) {
 
 		command := strings.ToUpper(args[0])
 		fmt.Println(command, args)
-		result := router.Handle(command, args[1:])
-		conn.Write(result)
-		if command != "INFO" {
-			fmt.Println("result", string(result))
+
+		router.EventLoop <- Event{
+			Command: command,
+			Args:    args[1:],
+			Conn:    &conn,
 		}
 	}
 }
