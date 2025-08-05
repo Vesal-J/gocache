@@ -40,6 +40,8 @@ type Command interface {
 	Keys(args []string) []byte
 	Rename(args []string) []byte
 	RenameNX(args []string) []byte
+	FlushAll(args []string) []byte
+	FlushDB(args []string) []byte
 }
 
 type CommandImpl struct {
