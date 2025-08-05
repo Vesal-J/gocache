@@ -38,6 +38,8 @@ type Command interface {
 	PExpire(args []string) []byte
 	PExpireAt(args []string) []byte
 	Keys(args []string) []byte
+	Rename(args []string) []byte
+	RenameNX(args []string) []byte
 }
 
 type CommandImpl struct {
