@@ -42,6 +42,11 @@ type Command interface {
 	RenameNX(args []string) []byte
 	FlushAll(args []string) []byte
 	FlushDB(args []string) []byte
+	HGet(args []string) []byte
+	HSet(args []string) []byte
+	HGetAll(args []string) []byte
+	HLen(args []string) []byte
+	HScan(args []string) []byte
 }
 
 type CommandImpl struct {

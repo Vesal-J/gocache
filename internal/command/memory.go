@@ -23,9 +23,20 @@ func (c *CommandImpl) Memory(args []string) []byte {
 			return utils.ToRESP("(nil)")
 		}
 
-		// Calculate approximate memory usage
-		// Key size + Value size + struct overhead
-		memoryUsage := len(key) + len(value.Value.(string)) + 24 // 24 bytes for struct overhead
+		// Calculate approximate memory usage based on type
+		var memoryUsage int
+		switch value.Type {
+		case "string":
+			memoryUsage = len(key) + len(value.Value.(string)) + 24
+		case "hash":
+			hash := value.Value.(map[string]string)
+			memoryUsage = len(key) + 24 // Base overhead
+			for field, val := range hash {
+				memoryUsage += len(field) + len(val)
+			}
+		default:
+			memoryUsage = len(key) + 24
+		}
 		result, err := utils.EncodeRESP(memoryUsage)
 		if err != nil {
 			return utils.ToRESP(err.Error())

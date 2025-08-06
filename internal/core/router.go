@@ -69,6 +69,11 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 		"renamenx":  command.RenameNX,
 		"flushall":  command.FlushAll,
 		"flushdb":   command.FlushDB,
+		"hget":      command.HGet,
+		"hset":      command.HSet,
+		"hgetall":   command.HGetAll,
+		"hlen":      command.HLen,
+		"hscan":     command.HScan,
 	}
 
 	return router

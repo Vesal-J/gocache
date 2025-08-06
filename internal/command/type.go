@@ -10,11 +10,11 @@ func (c *CommandImpl) Type(args []string) []byte {
 	}
 
 	key := args[0]
-	_, exists := c.Store.Caches[key]
+	cacheObj, exists := c.Store.Caches[key]
 	if !exists {
 		return utils.ToRESP("none")
 	}
 
-	// Currently we only support string type
-	return utils.ToRESP("string")
+	// Return the actual type
+	return utils.ToRESP(string(cacheObj.Type))
 }
