@@ -1,6 +1,9 @@
 package command
 
-import "github.com/vesal-j/gocache/internal/utils"
+import (
+	"github.com/vesal-j/gocache/internal/store"
+	"github.com/vesal-j/gocache/internal/utils"
+)
 
 func (c *CommandImpl) Get(args []string) []byte {
 	if len(args) != 1 {
@@ -14,6 +17,10 @@ func (c *CommandImpl) Get(args []string) []byte {
 			return utils.ToRESP(err.Error())
 		}
 		return result
+	}
+
+	if value.Type != store.STRING {
+		return utils.ToRESPError("WRONGTYPE Operation against a key holding the wrong kind of value")
 	}
 
 	return utils.ToRESP(value.Value.(string))

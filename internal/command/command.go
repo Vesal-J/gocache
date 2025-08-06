@@ -47,6 +47,14 @@ type Command interface {
 	HGetAll(args []string) []byte
 	HLen(args []string) []byte
 	HScan(args []string) []byte
+	HDel(args []string) []byte
+	HMGet(args []string) []byte
+	HMSet(args []string) []byte
+	HKeys(args []string) []byte
+	HExists(args []string) []byte
+	HIncrBy(args []string) []byte
+	HIncrByFloat(args []string) []byte
+	HVals(args []string) []byte
 }
 
 type CommandImpl struct {
