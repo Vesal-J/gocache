@@ -21,7 +21,7 @@ func (c *CommandImpl) SetEX(args []string) []byte {
 	}
 
 	c.Store.Caches[key] = store.CacheObject{
-		Key:       key,
+		Type:      store.STRING,
 		Value:     value,
 		TTL:       time.Duration(ttl) * time.Second,
 		CreatedAt: time.Now().Unix(),

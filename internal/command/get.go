@@ -16,5 +16,5 @@ func (c *CommandImpl) Get(args []string) []byte {
 		return result
 	}
 
-	return utils.ToRESP(value.Value)
+	return utils.ToRESP(value.Value.(string))
 }

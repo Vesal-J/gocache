@@ -22,7 +22,7 @@ func (c *CommandImpl) DecrBy(args []string) []byte {
 		return utils.ToRESP(strconv.Itoa(-decrement))
 	}
 
-	num, err := strconv.Atoi(value.Value)
+	num, err := strconv.Atoi(value.Value.(string))
 	if err != nil {
 		return utils.ToRESPError(err.Error())
 	}

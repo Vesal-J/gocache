@@ -19,7 +19,7 @@ func (c *CommandImpl) Strlen(args []string) []byte {
 		return result
 	}
 
-	result, err := utils.EncodeRESP(len(value.Value))
+	result, err := utils.EncodeRESP(len(value.Value.(string)))
 	if err != nil {
 		return utils.ToRESPError(err.Error())
 	}

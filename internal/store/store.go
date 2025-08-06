@@ -2,9 +2,19 @@ package store
 
 import "time"
 
+type CacheType string
+
+const (
+	STRING CacheType = "string"
+	HASH   CacheType = "hash"
+	LIST   CacheType = "list"
+	SET    CacheType = "set"
+	ZSET   CacheType = "zset"
+)
+
 type CacheObject struct {
-	Key       string
-	Value     string
+	Type      CacheType
+	Value     interface{}
 	TTL       time.Duration
 	CreatedAt int64
 }
@@ -18,6 +28,7 @@ func NewStore() *Store {
 	store := &Store{
 		Caches: make(map[string]CacheObject),
 	}
+
 	store.TTLManager = NewTTLManager(store)
 	store.TTLManager.Start()
 	return store

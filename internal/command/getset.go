@@ -16,7 +16,7 @@ func (c *CommandImpl) GetSet(args []string) []byte {
 
 	if exists {
 		c.Set([]string{key, value})
-		return utils.ToRESP(oldValue.Value)
+		return utils.ToRESP(oldValue.Value.(string))
 	} else {
 		c.Set([]string{key, value})
 		return utils.ToRESP("(nil)")

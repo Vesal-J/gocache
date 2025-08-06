@@ -32,7 +32,7 @@ func (c *CommandImpl) Getrange(args []string) []byte {
 	}
 
 	// Handle negative indices
-	strLen := len(value.Value)
+	strLen := len(value.Value.(string))
 	if start < 0 {
 		start = strLen + start
 	}
@@ -52,6 +52,6 @@ func (c *CommandImpl) Getrange(args []string) []byte {
 	}
 
 	// Extract substring
-	substring := value.Value[start : end+1]
+	substring := value.Value.(string)[start : end+1]
 	return utils.ToRESP(substring)
 }

@@ -19,7 +19,6 @@ func (c *CommandImpl) PSetEX(args []string) []byte {
 	}
 
 	c.Store.Caches[args[0]] = store.CacheObject{
-		Key:       args[0],
 		Value:     args[2],
 		TTL:       time.Duration(ttl) * time.Millisecond,
 		CreatedAt: time.Now().Unix(),

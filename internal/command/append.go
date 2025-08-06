@@ -16,7 +16,7 @@ func (c *CommandImpl) Append(args []string) []byte {
 		c.Set([]string{args[0], args[1]})
 		return utils.ToRESP("(integer) " + strconv.Itoa(len(args[1])))
 	} else {
-		c.Set([]string{args[0], value.Value + args[1]})
-		return utils.ToRESP("(integer) " + strconv.Itoa(len(value.Value)+len(args[1])))
+		c.Set([]string{args[0], value.Value.(string) + args[1]})
+		return utils.ToRESP("(integer) " + strconv.Itoa(len(value.Value.(string))+len(args[1])))
 	}
 }

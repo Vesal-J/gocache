@@ -25,7 +25,7 @@ func (c *CommandImpl) Memory(args []string) []byte {
 
 		// Calculate approximate memory usage
 		// Key size + Value size + struct overhead
-		memoryUsage := len(value.Key) + len(value.Value) + 24 // 24 bytes for struct overhead
+		memoryUsage := len(key) + len(value.Value.(string)) + 24 // 24 bytes for struct overhead
 		result, err := utils.EncodeRESP(memoryUsage)
 		if err != nil {
 			return utils.ToRESP(err.Error())
