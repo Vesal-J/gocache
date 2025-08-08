@@ -63,6 +63,8 @@ type Command interface {
 	LLen(args []string) []byte
 	LIndex(args []string) []byte
 	LSet(args []string) []byte
+	LTrim(args []string) []byte
+	LRem(args []string) []byte
 }
 
 type CommandImpl struct {

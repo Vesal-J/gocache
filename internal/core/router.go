@@ -90,6 +90,8 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 		"llen":         command.LLen,
 		"lindex":       command.LIndex,
 		"lset":         command.LSet,
+		"ltrim":        command.LTrim,
+		"lrem":         command.LRem,
 	}
 
 	return router
