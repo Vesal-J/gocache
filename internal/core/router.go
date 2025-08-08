@@ -82,6 +82,12 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 		"hincrby":      command.HIncrBy,
 		"hincrbyfloat": command.HIncrByFloat,
 		"hvals":        command.HVals,
+		"lpush":        command.LPush,
+		"rpush":        command.RPush,
+		"lpop":         command.LPop,
+		"rpop":         command.RPop,
+		"lrange":       command.LRange,
+		"llen":         command.LLen,
 	}
 
 	return router

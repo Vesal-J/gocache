@@ -55,6 +55,12 @@ type Command interface {
 	HIncrBy(args []string) []byte
 	HIncrByFloat(args []string) []byte
 	HVals(args []string) []byte
+	LPush(args []string) []byte
+	RPush(args []string) []byte
+	LPop(args []string) []byte
+	RPop(args []string) []byte
+	LRange(args []string) []byte
+	LLen(args []string) []byte
 }
 
 type CommandImpl struct {
