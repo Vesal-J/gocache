@@ -65,6 +65,8 @@ type Command interface {
 	LSet(args []string) []byte
 	LTrim(args []string) []byte
 	LRem(args []string) []byte
+	PrPop(args []string) []byte
+	BLPop(args []string) []byte
 }
 
 type CommandImpl struct {
