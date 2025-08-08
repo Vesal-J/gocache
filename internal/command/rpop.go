@@ -33,12 +33,17 @@ func (c *CommandImpl) RPop(args []string) []byte {
 	popped := list[len(list)-1]
 	list = list[:len(list)-1]
 
-	c.Store.Caches[key] = store.CacheObject{
-		Type:      store.LIST,
-		Value:     list,
-		TTL:       existingObj.TTL,
-		CreatedAt: existingObj.CreatedAt,
+	// If list becomes empty, delete the key (Redis behavior)
+	if len(list) == 0 {
+		delete(c.Store.Caches, key)
+	} else {
+		c.Store.Caches[key] = store.CacheObject{
+			Type:      store.LIST,
+			Value:     list,
+			TTL:       existingObj.TTL,
+			CreatedAt: existingObj.CreatedAt,
+		}
 	}
 
-	return utils.ToRESPArray([]string{popped})
+	return utils.ToRESP(popped)
 }

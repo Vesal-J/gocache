@@ -88,6 +88,8 @@ func NewRouter(store *store.Store, command command.Command) *Router {
 		"rpop":         command.RPop,
 		"lrange":       command.LRange,
 		"llen":         command.LLen,
+		"lindex":       command.LIndex,
+		"lset":         command.LSet,
 	}
 
 	return router

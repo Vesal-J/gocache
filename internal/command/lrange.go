@@ -40,13 +40,23 @@ func (c *CommandImpl) LRange(args []string) []byte {
 	if start < 0 {
 		start = len(list) + start
 	}
+	if start < 0 {
+		start = 0
+	}
 
 	if stop < 0 {
 		stop = len(list) + stop
 	}
+	if stop >= len(list) {
+		stop = len(list) - 1
+	}
 
-	if start > stop {
+	if start >= len(list) || start > stop {
 		return utils.ToRESPArray([]string{})
+	}
+
+	if stop >= len(list) {
+		stop = len(list) - 1
 	}
 
 	rangeList := list[start : stop+1]
